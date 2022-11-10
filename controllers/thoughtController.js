@@ -1,4 +1,4 @@
-const {Thought} = require('../models');
+const {Thought, User} = require('../models');
 const {Types} = require('mongoose');
 
 const notFound = "No thought with that ID";
@@ -16,7 +16,12 @@ module.exports = {
     async createThought(req, res) {
         try {
             const thought = await Thought.create(req.body);
-            res.json(thought);
+            const updatedUser = await User.findOneAndUpdate(
+                {_id: Types.ObjectId(req.body.userId)},
+                {$addToSet: {thoughts: Types.ObjectId(thought._id)}},
+                {runValidators: true, new: true}
+            );
+            updatedUser ? res.json(updatedUser) : res.status(404).json({message: notFound});
         } catch (e) {
             res.status(500).json(e);
         }
@@ -34,6 +39,11 @@ module.exports = {
     async deleteThought(req, res) {
         try {
             const deletedThought = await Thought.findOneAndDelete({_id: Types.ObjectId(req.params.thoughtId)});
+            await User.findOneAndUpdate(
+                {thoughts: Types.ObjectId(deletedThought._id)},
+                {$pull: {thoughts: Types.ObjectId(deletedThought._id)}},
+                {runValidators: true, new: true}
+            );
             deletedThought ? res.json(deletedThought) : res.status(404).json({message: notFound});
         } catch (e) {
             res.status(500).json(e);
@@ -58,7 +68,7 @@ module.exports = {
         try {
             const thought = await Thought.findOneAndUpdate(
                 {_id: Types.ObjectId(req.params.thoughtId)},
-                {$addToSet: {friends: Types.ObjectId(req.params.friendId)}},
+                {$addToSet: {reactions: req.body}},
                 {runValidators: true, new: true}
             );
             thought ? res.json(thought) : res.status(404).json({message: notFound});
@@ -71,7 +81,7 @@ module.exports = {
         try {
             const thought = await Thought.findOneAndUpdate(
                 {_id: Types.ObjectId(req.params.thoughtId)},
-                {$pull: {friends: Types.ObjectId(req.params.friendId)}},
+                {$pull: {reactions: Types.ObjectId(req.params.reactionId)}},
                 {runValidators: true, new: true}
             );
 

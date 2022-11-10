@@ -6,7 +6,7 @@ const notFound = "No user with that ID";
 module.exports = {
     async getUsers(req, res) {
         try {
-            const users = await User.find();
+            const users = await User.find().select('-__v');
             res.json(users);
         } catch (e) {
             res.status(500).json(e);
@@ -24,7 +24,7 @@ module.exports = {
 
     async getSingleUser(req, res) {
         try {
-            const user = await User.findOne({_id: Types.ObjectId(req.params.userId)});
+            const user = await User.findOne({_id: Types.ObjectId(req.params.userId)}).select('-__v').populate('friends');
             user ? res.json(user) : res.status(404).json({message: notFound});
         } catch (e) {
             res.status(500).json(e);

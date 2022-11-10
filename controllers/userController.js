@@ -34,6 +34,7 @@ module.exports = {
     async deleteUser(req, res) {
         try {
             const deletedUser = await User.findOneAndDelete({_id: Types.ObjectId(req.params.userId)});
+            await User.updateMany({friends: Types.ObjectId(req.params.userId)},{$pull: {friends: Types.ObjectId(req.params.userId)}});
             deletedUser ? res.json(deletedUser) : res.status(404).json({message: notFound});
         } catch (e) {
             res.status(500).json(e);

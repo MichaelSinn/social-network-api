@@ -1,4 +1,5 @@
 const {User} = require('../models');
+const {Types} = require('mongoose');
 
 const notFound = "No user with that ID";
 
@@ -23,7 +24,7 @@ module.exports = {
 
     async getSingleUser(req, res) {
         try {
-            const user = await User.findOne({_id: req.params.userId});
+            const user = await User.findOne({_id: Types.ObjectId(req.params.userId)});
             user ? res.json(user) : res.status(404).json({message: notFound});
         } catch (e) {
             res.status(500).json(e);
@@ -32,7 +33,7 @@ module.exports = {
 
     async deleteUser(req, res) {
         try {
-            const deletedUser = await User.findOneAndDelete({_id: req.params.userId});
+            const deletedUser = await User.findOneAndDelete({_id: Types.ObjectId(req.params.userId)});
             deletedUser ? res.json(deletedUser) : res.status(404).json({message: notFound});
         } catch (e) {
             res.status(500).json(e);
@@ -42,7 +43,7 @@ module.exports = {
     async updateUser(req, res) {
         try {
             const updatedUser = await User.findOneAndUpdate(
-                {_id: req.params.userId},
+                {_id: Types.ObjectId(req.params.userId)},
                 {$set: req.body},
                 {runValidators: true, new: true}
             );
@@ -56,7 +57,7 @@ module.exports = {
     async addFriend(req, res) {
         try {
             const user = User.findOneAndUpdate(
-                {_id: req.params.userId},
+                {_id: Types.ObjectId(req.params.userId)},
                 {$addToSet: {friends: req.body}},
                 {runValidators: true, new: true}
             );
@@ -69,8 +70,8 @@ module.exports = {
     async deleteFriend(req, res) {
         try {
             const user = User.findOneAndUpdate(
-                {_id: req.params.userId},
-                {$pull: {friends: {_id: req.params.friendId}}},
+                {_id: Types.ObjectId(req.params.userId)},
+                {$pull: {friends: {_id: Types.ObjectId(req.params.friendId)}}},
                 {runValidators: true, new: true}
             );
 

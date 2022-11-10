@@ -4,12 +4,12 @@ router.route('/')
     .get()
     .post();
 
-router.route('/:id')
+router.route('/:thoughtId')
     .get()
     .put()
     .delete();
 
-router.route('/:id/reactions')
+router.route('/:thoughtId/reactions')
     .post()
     .delete()
 

@@ -81,7 +81,7 @@ module.exports = {
         try {
             const thought = await Thought.findOneAndUpdate(
                 {_id: Types.ObjectId(req.params.thoughtId)},
-                {$pull: {reactions: Types.ObjectId(req.params.reactionId)}},
+                {$pull: {reactions: {_id: Types.ObjectId(req.params.reactionId)}}},
                 {runValidators: true, new: true}
             );
 

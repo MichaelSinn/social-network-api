@@ -9,6 +9,7 @@ const thoughtSchema = new Schema(
             minLength: 1,
             maxLength: 280
         },
+        // TODO: Format the date
         createdAt: {
             type: Date,
             default: Date.now,

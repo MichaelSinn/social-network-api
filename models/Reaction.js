@@ -1,10 +1,6 @@
-const { Schema, Types } = require("mongoose");
+const {Schema} = require("mongoose");
 
 const reactionSchema = new Schema({
-    reactionId: {
-        type: Schema.Types.ObjectId,
-        default: () => new Types.ObjectId()
-    },
     reactionBody: {
         type: Schema.Types.String,
         required: true,
@@ -14,13 +10,16 @@ const reactionSchema = new Schema({
         type: Schema.Types.String,
         required: true
     },
+    // TODO: Format the date
     createdAt: {
         type: Date,
         default: Date.now,
-        get: function (createdTime){
+        get: function (createdTime) {
             return createdTime.format('dd-mm-yy');
         }
-    }
+    },
+}, {
+    id: false
 });
 
 module.exports = reactionSchema;

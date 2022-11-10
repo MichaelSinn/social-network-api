@@ -24,7 +24,7 @@ module.exports = {
 
     async getSingleUser(req, res) {
         try {
-            const user = await User.findOne({_id: Types.ObjectId(req.params.userId)}).select('-__v').populate('friends');
+            const user = await User.findOne({_id: Types.ObjectId(req.params.userId)}).select('-__v').populate(['friends', 'thoughts']);
             user ? res.json(user) : res.status(404).json({message: notFound});
         } catch (e) {
             res.status(500).json(e);

@@ -56,28 +56,28 @@ module.exports = {
 
     async addFriend(req, res) {
         try {
-            const user = User.findOneAndUpdate(
+            const user = await User.findOneAndUpdate(
                 {_id: Types.ObjectId(req.params.userId)},
-                {$addToSet: {friends: req.body}},
+                {$addToSet: {friends: Types.ObjectId(req.params.friendId)}},
                 {runValidators: true, new: true}
             );
             user ? res.json(user) : res.status(404).json({message: notFound});
         } catch (e) {
-            res.status(404)
+            res.status(500).json(e);
         }
     },
 
     async deleteFriend(req, res) {
         try {
-            const user = User.findOneAndUpdate(
+            const user = await User.findOneAndUpdate(
                 {_id: Types.ObjectId(req.params.userId)},
-                {$pull: {friends: {_id: Types.ObjectId(req.params.friendId)}}},
+                {$pull: {friends: Types.ObjectId(req.params.friendId)}},
                 {runValidators: true, new: true}
             );
 
             user ? res.json(user) : res.status(404).json({message: notFound});
         } catch (e) {
-            res.status(404)
+            res.status(500).json(e);
         }
     }
 }
